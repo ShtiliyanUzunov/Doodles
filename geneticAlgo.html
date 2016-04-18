@@ -1,0 +1,122 @@
+<body>
+	<script>
+	var population,
+	bestIndividuals = [];
+		
+	var A = [16, -34, -48, 41],
+		NEW_POPULATION_SIZE = 30,
+		BEST_INDIVIDUALS_SIZE = 10,
+		CROSSOVER_RATIO = 15,
+		MUTATION_RATIO = 40,
+		KEEP_TOP_N = 2,
+		END_CONDITION = 10000,
+		GENERATION_RANGE = 100;
+
+	var calc = function (x, Ind) { 
+		return Ind[0] * x * x * x + Ind[1] * x * x + Ind[2] * x + Ind[3];
+	};
+
+	var generatePopulation = function (bestIndividuals) { 
+		population = [];
+		for (var j = 0 ; j < bestIndividuals.length ; j++) { 
+			population.push(bestIndividuals[j]);
+		}
+		
+		for (var i = 0; i < NEW_POPULATION_SIZE - bestIndividuals.length ; i++) {
+			var individual = [];
+			individual.push(Math.random() * GENERATION_RANGE - GENERATION_RANGE / 2);
+			individual.push(Math.random() * GENERATION_RANGE - GENERATION_RANGE / 2);
+			individual.push(Math.random() * GENERATION_RANGE - GENERATION_RANGE / 2);
+			individual.push(Math.random() * GENERATION_RANGE - GENERATION_RANGE / 2);
+			population.push({ 
+				individual : individual,
+				score : 0
+			});
+		}
+		
+		var populationCache = population.slice();
+		for (var k = KEEP_TOP_N; k < CROSSOVER_RATIO + KEEP_TOP_N ; k++) {
+			population[k] = crossover(populationCache);
+			for (var ii = 0 ; ii < 4 ; ii++) { 
+				var mutation =	Math.random() * MUTATION_RATIO - MUTATION_RATIO/2;
+				population[k].individual[ii] += mutation;
+			}
+		}
+	};
+
+	var crossover = function (population) {
+		var indexFirst = Math.round(Math.random() * (NEW_POPULATION_SIZE-1));
+		var indexSecond = Math.round(Math.random() * (NEW_POPULATION_SIZE-1));
+		var first = population[indexFirst];
+		var second = population[indexSecond];
+		var childIndividual = [];
+		for (var i = 0 ; i < 4; i++) {
+			childIndividual[i] = (first.individual[i] + second.individual[i]) / 2;
+		}
+		return {
+			individual : childIndividual,
+			score : 0
+		};
+	};
+
+	var evaluateIndividuals = function () {
+		for (var i = 0 ; i < NEW_POPULATION_SIZE ; i++) {
+			var error = fitness(population[i].individual);
+			population[i].score = error;
+		}
+	}
+
+	var fitness = function (individual) { 
+		var totalError = 0;
+		for (var i = 0 ; i < 50 ; i++) { 
+			var val = Math.random() * GENERATION_RANGE - GENERATION_RANGE / 2;
+			var calcReal = calc(val, A);
+			var calcFound = calc(val, individual);
+			totalError += Math.abs(calcReal - calcFound);
+		}
+		return totalError;
+	};
+
+	var selectBestIndividuals = function () {
+		var compare = function (first, second) {
+			if (first.score < second.score)
+				return -1;
+			if (first.score > second.score)
+				return 1;
+			return 0;
+		};
+		
+		population.sort(compare);
+		var top = [];
+		for (var i = 0 ; i < BEST_INDIVIDUALS_SIZE ; i++) {
+			top.push(population[i]);
+		}
+		return top;
+	};
+
+	var predict = function (val, individual) {
+		individual = individual || bestIndividuals[0].individual;
+		var real = calc(val, A);
+		var found = calc(val, individual);
+		console.log("================");
+		console.log("Predicting: " + A[0] + "x^3 " + A[1] + "x^2 " + A[2] + "x +" + A[3]);
+		console.log("x: " + val);
+		console.log("Answer is: " + real);
+		console.log("Found is: " + found);
+		console.log("Error is: " + Math.abs((real-found)/real) * 100 + "%");
+	};
+
+	for (var i = 0; i < END_CONDITION ; i++) {
+		generatePopulation(bestIndividuals);
+		evaluateIndividuals();
+		bestIndividuals = selectBestIndividuals();
+	}
+
+	console.log("Best individual found:");
+	console.log(bestIndividuals[0]);
+
+	predict(40);
+	predict(20);
+	predict(90);
+	</script>
+</body>

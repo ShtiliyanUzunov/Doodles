@@ -1,0 +1,59 @@
+<script>
+	var arr = [1,61,2,7,9,3,36];
+	
+	var getCombinations = function* (arr) {
+		var initialLength = arr.length;
+		
+		/**
+		 * Divide and Conquer design paradigm
+		 * We split the array until it is of size 1, and the element is also with size 1,
+		 * then it's combined upwards with the available array
+		 */
+		var combine = function (arr, elements) {
+			if (elements.length == 1) {
+				return [arr.concat(elements)];
+			}
+			
+			var result = [];
+			for (var i = 0; i < elements.length; i++) {
+				var elemCopy = elements.slice(0),
+					splice = elemCopy.splice(i,1),
+					subCombinations = combine(splice, elemCopy);
+					
+				subCombinations.forEach(function (subCombination) {
+					result.push(arr.concat(subCombination));
+				});
+			}
+			
+			return result;
+		};
+		
+		yield *combine([], arr);
+	};
+	
+	/**
+	 * Brute Force search.
+	 * We iterate through all possible combinations of the array elements
+	 * and check if they are sorted or not
+	 */
+	var bruteForceSort = function (arr) {
+		var isSorted = function (arr) {
+			for (var i = 0; i < arr.length - 1; i++) {
+				if (arr[i] > arr[i+1]) {
+					return false;
+				}
+			}
+			return true;
+		};
+		
+		var iterator = getCombinations(arr);
+		
+		while (!isSorted(arr)) {
+			arr = iterator.next().value;
+		}
+		
+		return arr;
+	};
+	
+	console.log(bruteForceSort(arr));
+</script>

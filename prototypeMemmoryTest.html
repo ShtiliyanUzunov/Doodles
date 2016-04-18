@@ -1,0 +1,55 @@
+<script>
+	var classFunction = function () {
+		var privateVar = 0;
+		this.publicFunction = function () {
+			privateVar++;
+		}
+		
+		this.publicFunction2 = function () {
+			privateVar--;
+		}
+		
+		this.publicFunction3 = function () {
+			privateVar *= privateVar;
+		}
+		
+		this.publicFunction4 = function () {
+			privateVar /= privateVar;
+		}
+	};
+	
+	var classFunction2 = function () {
+		this._privatePublicVar = 0;
+	};
+	
+	classFunction2.prototype.publicFunction = function () {
+			this._privatePublicVar++;
+	};
+	
+	classFunction2.prototype.publicFunction2 = function () {
+			this._privatePublicVar--;
+	};
+	
+	classFunction2.prototype.publicFunction3 = function () {
+			this._privatePublicVar *= privateVar;
+	};
+	
+	classFunction2.prototype.publicFunction4 = function () {
+			this._privatePublicVar /= privateVar;
+	};
+	
+	var objects = [];
+	/**
+	 * ~50mb
+	 */
+	for (var i = 0; i < 1000000; i++) {
+		objects.push(new classFunction2());
+	}
+	
+	/**
+	 * ~250mb
+	for (var i = 0; i < 1000000; i++) {
+		objects.push(new classFunction());
+	}
+	*/
+</script>

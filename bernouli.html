@@ -1,0 +1,65 @@
+<body>
+	<style>
+		#graphics {
+			width: 900px;
+			height: 500px;
+			border: 1px solid black;
+		}
+		
+		#graphics div {
+			display: inline-block;
+			color: white;
+			text-align: center;
+		}
+	</style>
+	<div id="graphics">
+	</div>
+</body>
+<script>
+	
+	var placeBar = function (count, bn, max) {
+		var barWidth = document.getElementById("graphics").clientWidth / (trials+1);
+		var barHeight = bn * document.getElementById("graphics").clientHeight / max;
+		var bar = document.createElement("div");
+		bar.style.width = barWidth;
+		bar.style.height = barHeight;
+		bar.style.background = "teal";
+		bar.innerHTML = "Count: " + count + "</br>Prob: " + bn.toFixed(4);
+		document.getElementById("graphics").appendChild(bar);
+	};
+
+	var fact = function (n) {
+		var sum = 1;
+		for (var i = 1; i <=n ; i++ ) {
+			sum *= i;
+		}
+		return sum;
+	};
+	
+	var bernouli = function (p, n, k) {
+			var q = 1 - p;
+			var nChooseK = fact(n) / (fact(n-k) * fact(k));
+			return nChooseK * Math.pow(p, k) * Math.pow( q, n-k );
+	};
+	
+	var prob = 0.6;
+	var trials = 50;
+	var total = 0;
+	var bars = [];
+	
+	for (var pick = 0; pick <= trials ; pick++) {
+		var bn = bernouli(prob, trials, pick);
+		total += bn;
+		bars.push(bn);
+		console.log("Chance to get " + pick + " successes, in " + trials);
+		console.log(bn);
+	}
+	
+	console.log("total :" + total);
+	
+	for (var i = 0; i <= bars.length; i++) {
+		placeBar(i, bars[i], Math.max.apply(null, bars));
+	}
+	
+
+</script>
