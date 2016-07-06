@@ -1,0 +1,48 @@
+<body>
+	<style>
+		body {
+			width: 100%;
+			height: 100%
+			padding: 0;
+			margin: 0;
+		}
+		
+		canvas { 
+			border:1px solid black;
+			margin-left: calc(50% - 300px);
+			margin-top: 200px;
+		}
+		
+	</style>
+	<canvas id='canvas' width="600" height="600" ></canvas>
+	<script src="helpers.js"></script>
+	<script>
+			
+		var Walker = function() {
+			this.x = width/2;
+			this.y = height/2;
+		};
+
+		Walker.prototype.display = function () {
+			stroke(0, 0, 0);
+			point(this.x, this.y);
+		};
+
+		// Randomly move up, down, left, right, or stay in one place
+		Walker.prototype.walk = function () {
+			var stepx = floor(random(3))-1;
+			var stepy = floor(random(3))-1;
+			this.x += stepx;
+			this.y += stepy;
+		};
+
+		var w = new Walker();
+
+		var draw = function() {
+			w.walk();
+			w.display();
+		};
+
+		setInterval(draw, 1);
+	</script>
+</body>
