@@ -1,0 +1,71 @@
+<body>
+	<style>
+		#content { 
+			width: 100%;
+			height: 500px;
+			padding-top: 50px;
+		}
+		
+		.densityBar { 
+			display: inline-block;
+			vertical-align: bottom;
+			background-color: green;
+		}
+		
+		.densityBar span { 
+			position: relative;
+			top: -20px;
+		}
+	</style>
+	<div id='content'>
+	</div>
+	<script>
+		/**
+		 * Here I simulate a custom density function that I made up
+		 * Random Density Function (RDF) = 12*x^2 -12*x + 3
+		 * Cumulative Density Function (CDF) of the RDF = 4*x^3 -6*x^2 +3*x
+		 * Inverse of the CDF (CDF^(-1)) = (x/4 - 1/8)^(1/3) + 1/2
+		 */
+		Math.cbrt = function(x) {
+			var sign = x === 0 ? 0 : x > 0 ? 1 : -1;
+			return sign * Math.pow(Math.abs(x), 1 / 3);
+		}
+
+		var customDistribution = function () {
+			var x = Math.random();
+			//The inverse of the CDF
+			return Math.cbrt(x/4 - 1/8) + 1/2;
+		}
+		
+		var barsCount = 40,
+			barRange = 1/barsCount,
+			barWidth = document.getElementById('content').offsetWidth / barsCount;
+			barsDensity = [],
+			sampleSize = 3000,
+			samples = [];
+			
+		for (var i = 0; i < barsCount; i++) { barsDensity[i] = 0; }	
+			
+		for (var i = 0; i < sampleSize; i++)  {
+			var random = customDistribution();
+			barsDensity[ Math.floor( random / barRange ) ]++;
+		}
+		
+		var maxHeight = Math.max.apply(null, barsDensity),
+			ctntHeight = document.getElementById('content').offsetHeight;
+			unitHeight = ctntHeight / maxHeight;
+		
+		barsDensity.forEach(function (density)  {
+			var content = document.getElementById("content"),
+				bar = document.createElement('div');
+			
+			bar.className += "densityBar";
+			bar.style.width = barWidth + "px";
+			bar.style.height = unitHeight * density + "px";
+			bar.innerHTML  = "<span>" + density + "</span>";
+			document.getElementById('content').appendChild(bar);
+		});
+		
+		document.getElementById('content').style.display = "table-cell";
+	</script>
+</body>

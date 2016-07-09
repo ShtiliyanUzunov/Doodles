@@ -1,0 +1,104 @@
+<script>
+	var SuffixTree = (function () {
+		var Node = function (character) {
+			this.value = character.toLowerCase();
+			this.children = [];
+		};
+		
+		Node.prototype.isLeaf = function () {
+			return this.value === '$' && this.children.length === 0;
+		};
+		
+		Node.prototype.getChild = function (chr) {
+			var child = -1;
+			this.children.forEach(function (node) {
+				if (node.value === chr) {
+					child = node;
+				}
+			});
+			return child;
+		};
+		
+		var SuffixTree = function (dictionary) {
+			this.root = new Node('$');
+		
+			var that = this;
+			dictionary.forEach(function (word) {
+				that.addString(word);
+			});
+		};
+		
+		SuffixTree.prototype.addString = function (str) {
+			str = str.toLowerCase();
+			str += "$";
+			
+			var currentNode = this.root;
+			
+			for (var i = 0; i < str.length; i++) {
+				var nextNode = currentNode.getChild(str[i]);
+				if (nextNode === -1) {
+					nextNode = new Node(str[i]);
+					currentNode.children.push(nextNode);
+				}
+				currentNode = nextNode;
+			}
+		};
+		
+		SuffixTree.prototype.createSuggestions = function (node, str) {
+			if (node.isLeaf()) {
+				return [str];
+			}
+					
+			var suggestions = [],
+				that = this;;
+					
+			var strCopy = new String(str);
+			strCopy += node.value;
+					
+			node.children.forEach(function (child) {
+				var augment = that.createSuggestions(child, strCopy);
+				suggestions = suggestions.concat(augment);
+			});
+					
+			return suggestions;
+		};
+		
+		SuffixTree.prototype.complete = function (str, length) {
+			str = str.toLowerCase();
+			var currentNode = this.root;
+			
+			for (var i = 0; i < str.length; i++) {
+				var nextNode = currentNode.getChild(str[i]);
+				if (nextNode === -1) {
+					return [];
+				}
+				currentNode = nextNode;
+			}
+			
+			return this.createSuggestions(currentNode, str.substr(0, str.length - 1));
+		};
+		
+		SuffixTree.prototype.getAllWords = function () {
+			var words = [],
+				that = this;
+				
+			this.root.children.forEach(function (child) {
+				words = words.concat(that.createSuggestions(child, ""));
+			});
+			
+			return words;
+		};
+		
+		return SuffixTree;
+	})();
+	
+	var text = "The suffix tree for the string S of length n is defined as a tree such that:[2] The tree has exactly n leaves numbered from 1 to n. Except for the root, every internal node has at least two children. Each edge is labeled with a non-empty substring of S. No two edges starting out of a node can have string-labels beginning with the same character. The string obtained by concatenating all the string-labels found on the path from the root to leaf i spells out suffix S[i..n], for i from 1 to n. Since such a tree does not exist for all strings, S is padded with a terminal symbol not seen in the string (usually denoted $). This ensures that no suffix is a prefix of another, and that there will be n leaf nodes, one for each of the n suffixes of S. Since all internal non-root nodes are branching, there can be at most n ?  1 such nodes, and n + (n ? 1) + 1 = 2n nodes in total (n leaves, n ? 1 internal non-root nodes, 1 root). Suffix links are a key feature for older linear-time construction algorithms, although most newer algorithms, which are based on Farach's algorithm, dispense with suffix links. In a complete suffix tree, all internal non-root nodes have a suffix link to another internal node. If the path from the root to a node spells the string \chi\alpha, where \chi is a single character and \alpha is a string (possibly empty), it has a suffix link to the internal node representing \alpha. See for example the suffix link from the node for ANA to the node for NA in the figure above. Suffix links are also used in some algorithms running on the tree."
+	var words = text.split(" ");
+	
+	var tree = new SuffixTree(words);
+	console.log(tree.complete("T"));
+	tree.addString("TenNis");
+	tree.addString("tEmPoRary");
+	console.log(tree.complete("T"));
+	console.log(tree.getAllWords());
+</script>

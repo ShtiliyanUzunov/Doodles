@@ -1,0 +1,68 @@
+<script>
+	var Node =(function () {
+		var count = 0;
+		
+		var N = function () {
+			this.id = ++count;
+			this.connectedNodes = [];
+		};
+		
+		N.prototype.connect = function (Node) {
+			this.connectedNodes.push(Node);
+		};
+		
+		return N;
+	})(); 
+	
+	var N1 = new Node();
+	var N2 = new Node();
+	var N3 = new Node();
+	var N4 = new Node();
+	var N5 = new Node();
+	var N6 = new Node();
+	var N7 = new Node();
+	var N8 = new Node();
+	
+	N1.connect(N2);
+	N1.connect(N4);
+	N2.connect(N3);
+	N2.connect(N8);
+	N3.connect(N5);
+	N4.connect(N1);
+	N5.connect(N4);
+	N6.connect(N5);
+	N6.connect(N1);
+	N7.connect(N8);
+	
+	var graph = [N1, N2, N3, N4, N5, N6, N7, N8];
+	
+	var isAcyclic = function (graph) {
+		var removeConnectionsToNode = function (removedNode) {
+			graph.forEach(function (node) {
+				for (var i = 0; i < node.connectedNodes.length; i++) {
+					if (node.connectedNodes[i] === removedNode) {
+						node.connectedNodes.splice(i, 1);
+						return;
+					}
+				}
+			});
+		};
+		
+		for (var i = 0; i < graph.length; i++) {
+			var node = graph[i];
+			if (node.connectedNodes.length === 0) {
+				graph.splice(i, 1);
+				i = -1;
+				removeConnectionsToNode(node);
+			}
+		}
+		
+		if (graph.length === 0) {
+			return true;
+		}
+		
+		return false;
+	};
+	
+	console.log(isAcyclic(graph));
+</script>

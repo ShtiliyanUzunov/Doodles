@@ -1,0 +1,25 @@
+<script>
+function solution(Arr) {
+	var biggestSize = 1;
+	var currentSize = 1;
+	
+    for (var i = 0; i < Arr.length - 1; i++) {
+		if (Arr[i] * Arr[i + 1] <= 0) {
+			currentSize++;
+			if (Arr[i + 1] === 0) {
+				Arr[i + 1] = -1 * Arr[i]; 
+			}
+		} else {
+			biggestSize = Math.max(currentSize, biggestSize);
+			currentSize = 1;
+		}
+	}
+	
+	biggestSize = Math.max(currentSize, biggestSize);
+
+    return biggestSize;
+}
+
+console.log(solution([-1, 1, -100, 100]));
+	
+</script>

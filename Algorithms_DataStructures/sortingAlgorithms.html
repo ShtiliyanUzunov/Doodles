@@ -1,0 +1,48 @@
+<script>
+	var quickSort = function (arr) {
+	
+		var sort = function (arr, from, to) {
+			if (from >= to) {
+				return;
+			}
+			
+			var pivotIndex = to;
+			var wallIndex = from;
+			
+			for (var i = from; i < to ; i++) {
+				if (arr[i] < arr[pivotIndex]) {
+					var temp = arr[wallIndex];
+					arr[wallIndex] = arr[i];
+					arr[i] = temp;
+					wallIndex++;
+				}
+			}
+			
+			var temp = arr[wallIndex];
+			arr[wallIndex] = arr[pivotIndex];
+			arr[pivotIndex] = temp;
+			
+			sort(arr, from, wallIndex - 1);
+			sort(arr, wallIndex + 1, to);
+		}
+		
+		sort(arr,0 , arr.length - 1);
+		return arr;
+	};
+	
+	var bubbleSort = function (arr) {
+		for (var i = 0; i < arr.length; i++) {
+			for (var j = i; j < arr.length; j++) {
+				if (arr[j] <= arr[i]) {
+					var temp = arr[j];
+					arr[j] = arr[i];
+					arr[i] = temp;
+				}
+			}
+		}
+		return arr;
+	};
+	
+	var arr = [12,7,1,4,7,3,4,16,7,2,61,2,6,22];
+	console.log(bubbleSort(arr));
+</script>

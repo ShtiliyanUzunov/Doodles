@@ -1,0 +1,39 @@
+<script>
+	var probability = 0.125;
+	
+	var roll = function () { 
+		var random = Math.random();
+		if (random > probability) { 
+			return false;
+		}
+		
+		return true;
+	}
+	
+	var amount = 0,
+		trials = 1000000,
+		successfullRolls = 0,
+		unsuccessfullRolls = 0,
+		coef = (1 - probability)/probability + 0.3,
+		bet = 10,
+		moneyTotal = trials * bet;
+		
+	for (var i = 0; i < trials; i++) {
+		if (roll()) {
+			successfullRolls++;
+			amount += coef * bet;
+		} else {
+			unsuccessfullRolls++;
+			amount -= bet;
+		}
+	}
+	
+	console.log("Amount: " + amount);
+	console.log("Coef: " + coef);
+	console.log("Money total: " + moneyTotal);
+	console.log("Gain: " + amount / (bet * trials));
+	console.log("Successfull: " + successfullRolls);
+	console.log("Unsuccessfull: " + unsuccessfullRolls);
+	console.log("Success/Total ratio: " + successfullRolls/(successfullRolls + unsuccessfullRolls));
+	
+</script>
