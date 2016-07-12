@@ -32,16 +32,26 @@
 		}
 
 		var customDistribution = function () {
+			// while (true) {
+			// 	var r1 = Math.random();
+			// 	var r2 = Math.random();
+			// 	if (r2 < r1) {
+			// 		return r2;
+			// 	}
+			// }
+			
+		
 			var x = Math.random();
 			//The inverse of the CDF
 			return Math.cbrt(x/4 - 1/8) + 1/2;
+			
 		}
 		
-		var barsCount = 40,
+		var barsCount = 80,
 			barRange = 1/barsCount,
 			barWidth = document.getElementById('content').offsetWidth / barsCount;
 			barsDensity = [],
-			sampleSize = 3000,
+			sampleSize = 30000,
 			samples = [];
 			
 		for (var i = 0; i < barsCount; i++) { barsDensity[i] = 0; }	
