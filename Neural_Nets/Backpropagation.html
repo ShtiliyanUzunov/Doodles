@@ -1,0 +1,107 @@
+<body>
+    <script>
+        var SAMPLES_SIZE = 4000,
+			LEARN_RATE = 0.5;
+			
+		var activations = {
+			linear: {
+				output:	function (x) {
+					return x;
+				},
+				der: function (x) {
+					return 1;
+				}
+			},
+			sigmoid: {
+				output: function (x) {
+					return 1 / (1 + Math.exp(-x));
+				},
+				der: function (x) {
+					
+					var output = activations.sigmoid.output(x);
+					return output * (1 - output);
+				}
+			}
+		};
+        
+        var Link = function (source, dest) {
+            this.source = source;
+            this.dest = dest;
+            this.weight = Math.random() - 0.5;
+        };
+        
+        var Node = function () {
+            this.activation = activations.linear;
+            this.inputs = [];
+            this.output = 0;
+        };
+        
+        Node.prototype.caclOutput = function () {
+            this.output = 0;
+            for (var i = 0; i < inputs.length; i++) {
+                this.output += inputs[i].source.caclOutput() * inputs[i].weight;
+            }
+            return this.output;
+        };
+        
+        var Network = function (shape) {
+            var nodes = [];
+            /**
+             * Create new nodes in each layer
+             */
+            for (var i = 0; i < shape.length; i++) {
+                nodes.push([]);
+                for (var j = 0; j < shape[i]; j++) {
+                    nodes[i][j] = new Node();
+                }
+            }
+            
+            /**
+             * Connect the nodes to the ones in the previous players
+             */
+            for (var i = 1; i < shape.length; i++) {
+                for (var j = 0; j < shape[i]; j++) {
+                    var nodeIJ = nodes[i][j];
+                    for (var k = 0; k < nodes[i - 1].length; k++) {
+                        nodeIJ.inputs.push(new Link(nodes[i - 1][k], nodeIJ));
+                    }
+                }
+            }
+            
+            this.nodes = nodes;
+        };     
+        
+        Network.prototype.propagate = function (inputs) {
+            for (var i = 0; i < this.nodes; i++) {
+                
+            }
+        };
+
+        function createOutputs () {
+            var outputs = [];
+            for (var i = 0; i < SAMPLES_SIZE; i++) {
+                outputs.push(networkLead.propagate(inputs[i]));
+            }
+            return outputs;  
+        };
+        
+        function createInputs () {
+            var inputs = [];
+            for (var i = 0; i < SAMPLES_SIZE; i++) {
+                var input = [];
+                for (var j = 0; j < netShape[0]; j++) {
+                    input.push(Math.random());
+                }
+                inputs.push(input);
+            }
+            return inputs;
+        };
+           
+        var netShape = [4, 4, 2, 1];
+        var networkLead = new Network(netShape);
+        var networkCopy = new Network(netShape);
+        var inputs = createInputs();
+        var outputs = createOutputs();
+        
+    </script>
+</body>

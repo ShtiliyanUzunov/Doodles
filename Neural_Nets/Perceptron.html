@@ -1,0 +1,86 @@
+<body>
+	<script>
+		var SAMPLES_SIZE = 4000,
+			LEARN_RATE = 0.5;
+			
+		var activations = {
+			linear: {
+				output:	function (x) {
+					return x;
+				},
+				der: function (x) {
+					return 1;
+				}
+			},
+			sigmoid: {
+				output: function (x) {
+					return 1 / (1 + Math.exp(-x));
+				},
+				der: function (x) {
+					var output = activations.sigmoid.output(x);
+					return output * (1 - output);
+				}
+			}
+		};
+		
+		function createInputs() {
+			var inputs = [];
+			for (var i = 0; i < SAMPLES_SIZE; i++) {
+				var singlePurchase = []
+				for (var j = 0; j < 4; j++) {
+					singlePurchase[j] = Math.random();
+				}	
+				inputs.push(singlePurchase);
+			}
+			return inputs;
+		};
+		
+		function createOutputs () {
+			var outputs = [];
+			for (var i = 0; i < SAMPLES_SIZE; i++) {
+				var sum = 0;
+				for (var j = 0; j < 4; j++) {
+					sum += actualWeights[j] * inputs[i][j];
+				}
+				outputs[i] = activationFunction.output(sum);
+			}
+			return outputs;
+		};
+		
+		function generatePerceptronWeights () {
+			var w = [];
+			for (i = 0; i < 4; i++) {
+				w[i] = Math.random(); 
+			}
+			return w;
+		}
+		
+		var activationFunction = activations.sigmoid,
+			actualWeights = [0.65, 0.1, 0.76, 0.21],
+			inputs = createInputs(),
+			outputs = createOutputs();
+			
+		
+		var perceptronWeights = generatePerceptronWeights();
+		var errorHistory = [];
+		
+		for (var j = 0; j < SAMPLES_SIZE; j++) {
+			var pw = perceptronWeights,
+				calculatedOutput = pw[0] * inputs[j][0] + pw[1] * inputs[j][1] + pw[2] * inputs[j][2]+ pw[3] * inputs[j][3],
+				calculatedOutput = activationFunction.output(calculatedOutput);
+				error = outputs[j] - calculatedOutput;
+			
+			if (j % 500 == 0 || j == 0) {
+				errorHistory.push(error);
+			}
+			
+			for (var k = 0; k < 4 ; k++) {
+				var update = LEARN_RATE * error * inputs[j][k] * activationFunction.der(inputs[j][k]);
+				pw[k] += update;
+			}
+		}
+		
+		console.log(actualWeights);
+		console.log(perceptronWeights);
+	</script>
+</body>
