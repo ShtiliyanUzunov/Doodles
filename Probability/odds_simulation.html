@@ -11,17 +11,17 @@
 	}
 	
 	var amount = 0,
-		trials = 1000000,
+		trials = 100000,
 		successfullRolls = 0,
 		unsuccessfullRolls = 0,
-		coef = (1 - probability)/probability + 0.3,
+		coef = 1/probability,
 		bet = 10,
 		moneyTotal = trials * bet;
 		
 	for (var i = 0; i < trials; i++) {
 		if (roll()) {
 			successfullRolls++;
-			amount += coef * bet;
+			amount += (coef - 1) * bet;
 		} else {
 			unsuccessfullRolls++;
 			amount -= bet;
