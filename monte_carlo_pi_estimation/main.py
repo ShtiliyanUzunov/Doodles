@@ -1,6 +1,8 @@
 import math
 import random
 
+#https://en.wikipedia.org/wiki/Monte_Carlo_method
+
 sample_size = 100000
 
 distances = []
